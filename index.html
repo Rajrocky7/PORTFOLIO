@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KOLA RAJESH | Portfolio</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <h1>KOLA RAJESH</h1>
+
+    <!-- Theme toggle button -->
+    <div class="controls">
+      <button id="theme-toggle" class="theme-toggle" aria-pressed="false" aria-label="Toggle dark and light theme">
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" fill="currentColor"/></svg>
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6.76 4.84l-1.8-1.79L3.17 4.84l1.79 1.79 1.8-1.79zM1 13h3v-2H1v2zm10 9h2v-3h-2v3zm8.83-2.83l-1.79-1.79-1.8 1.79 1.8 1.79 1.79-1.79zM17 13h3v-2h-3v2zM4.84 17.24l-1.79 1.79 1.79 1.79 1.79-1.79-1.79-1.79zM12 6a6 6 0 100 12 6 6 0 000-12zm0-6h-2v3h2V0zm0 21h-2v3h2v-3z" fill="currentColor"/></svg>
+      </button>
+    </div>
+
+    <nav aria-label="Main navigation">
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#skills">Skills</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+ <audio id="battle-audio" preload="auto" loop>
+  <source src="PORTFOLIO/sounds/battle-loop.mp3" type="audio/mpeg">
+</audio>
+<audio id="clash-audio" preload="auto">
+  <source src="PORTFOLIO/sounds/clash.mp3" type="audio/mpeg">
+</audio>
+
+
+  <!-- HERO SECTION -->
+  <section id="hero" class="reveal" aria-labelledby="hero-heading">
+    <h2 id="hero-heading">Hi, I'm <span class="typed" data-text="KOLA RAJESH"></span></h2>
+    <p>A passionate Web Developer crafting modern websites & digital experiences.</p>
+    <a href="#projects" class="btn float" id="hero-cta">View My Work</a>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="reveal" aria-labelledby="about-heading">
+    <h2 id="about-heading">About Me</h2>
+    <p>I’m a web developer skilled in HTML, CSS, JavaScript, and React. I love building responsive, user-friendly websites and applications.</p>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects" class="reveal" aria-labelledby="projects-heading">
+    <h2 id="projects-heading">Projects</h2>
+    <p style="text-align:center; margin-top: 20px; color:var(--muted);">🚧 Projects are currently being updated. Stay tuned!</p>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills" class="reveal" aria-labelledby="skills-heading">
+    <h2 id="skills-heading">Skills</h2>
+    <ul>
+      <li>HTML5</li>
+      <li>CSS3</li>
+      <li>JavaScript</li>
+      <li>React</li>
+      <li>Git & GitHub</li>
+    </ul>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="reveal" aria-labelledby="contact-heading">
+    <h2 id="contact-heading">Contact Me</h2>
+    <p>📞 Mobile: <a href="tel:+918328352979">+91 83283 52979</a></p>
+    <p>📧 Email: <a href="mailto:KOLARAJESH89@gmail.com">KOLARAJESH89@gmail.com</a></p>
+    <p>💻 GitHub: <a href="https://github.com/Rajrocky7" target="_blank" rel="noopener">Rajrocky7</a></p>
+    <p>🔗 LinkedIn: <a href="https://linkedin.com/in/KOLARAJESH" target="_blank" rel="noopener">KOLA RAJESH</a></p>
+  </section>
+
+  <footer>
+    <p>© 2025 KOLA RAJESH. All rights reserved.</p>
+  </footer>
+
+  <!-- Inline script: typing, reveal on scroll, header color, theme toggle, clash+audio -->
+  <script>
+    // ---------- Header background toggle ----------
+    (function headerScroll(){
+      const header = document.querySelector('header');
+      if (!header) return;
+      const apply = () => header.style.background = window.scrollY > 50 ? "var(--surface)" : "var(--header)";
+      apply();
+      window.addEventListener('scroll', apply);
+    })();
+
+    // ---------- Typing effect setup ----------
+    (function typingEffect(){
+      const el = document.querySelector('.typed');
+      if (!el) return;
+      const text = el.dataset.text?.trim() || el.textContent.trim();
+      el.textContent = text; // CSS controls reveal via max-width animation
+    })();
+
+    // ---------- Reveal on scroll ----------
+    (function revealOnScroll(){
+      const reveals = document.querySelectorAll('.reveal');
+      if (!reveals.length) return;
+      if (!('IntersectionObserver' in window)) {
+        reveals.forEach(r => r.classList.add('active'));
+        return;
+      }
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('active');
+            obs.unobserve(entry.target);
+          }
+        });
+      }, { root: null, rootMargin: '0px 0px -10% 0px', threshold: 0.12 });
+      reveals.forEach(r => observer.observe(r));
+    })();
+
+    // ---------- THEME: Dark/Light toggle with persistence ----------
+    (function themeToggle(){
+      const root = document.documentElement;
+      const toggleBtn = document.getElementById('theme-toggle');
+      const storageKey = 'theme-preference';
+
+      function getPreferredTheme(){
+        const saved = localStorage.getItem(storageKey);
+        if (saved === 'dark' || saved === 'light') return saved;
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        return prefersDark ? 'dark' : 'light';
+      }
+
+      function applyTheme(theme){
+        if (theme === 'dark') {
+          root.classList.remove('light-theme');
+          root.classList.add('dark-theme');
+          toggleBtn.setAttribute('aria-pressed', 'true');
+        } else {
+          root.classList.remove('dark-theme');
+          root.classList.add('light-theme');
+          toggleBtn.setAttribute('aria-pressed', 'false');
+        }
+      }
+
+      function toggleHandler(){
+        const active = root.classList.contains('dark-theme') ? 'dark' : 'light';
+        const next = active === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        try { localStorage.setItem(storageKey, next); } catch(e) {}
+      }
+
+      const initial = getPreferredTheme();
+      applyTheme(initial);
+
+      toggleBtn.addEventListener('click', toggleHandler);
+      toggleBtn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleHandler();
+        }
+      });
+
+      if (window.matchMedia) {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+          if (!localStorage.getItem(storageKey)) {
+            applyTheme(e.matches ? 'dark' : 'light');
+          }
+        });
+      }
+    })();
+
+    // Accessibility: add focus outline class on tab
+    (function focusOutlineToggle(){
+      function handleFirstTab(e) {
+        if (e.key === 'Tab') {
+          document.documentElement.classList.add('user-is-tabbing');
+          window.removeEventListener('keydown', handleFirstTab);
+        }
+      }
+      window.addEventListener('keydown', handleFirstTab);
+    })();
+
+    // ---------- Clash & Battle audio handling ----------
+    (function setupAudio(){
+      const clash = document.getElementById('clash-audio');
+      const battle = document.getElementById('battle-audio');
+      const cta = document.getElementById('hero-cta');
+      if (!clash || !battle || !cta) return;
+
+      // prefer gentle default volume for loop
+      battle.volume = 0.22;
+      battle.loop = true;
+
+      let clashPlayed = false;
+      let loopStarted = false;
+
+      async function playClashThenLoop(){
+        try {
+          if (!clashPlayed) {
+            clash.currentTime = 0;
+            await clash.play().catch(()=>{});
+            clashPlayed = true;
+          }
+          if (!loopStarted) {
+            setTimeout(async () => {
+              try {
+                battle.currentTime = 0;
+                await battle.play().catch(()=>{});
+                loopStarted = true;
+              } catch(e){}
+            }, 320);
+          }
+        } catch (e) {
+          console.warn('audio play failed', e);
+        }
+      }
+
+      cta.addEventListener('click', (e) => { playClashThenLoop(); });
+      cta.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') playClashThenLoop(); });
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          if (!battle.paused) battle.pause();
+        } else {
+          if (loopStarted && battle.paused) battle.play().catch(()=>{});
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
