@@ -70,14 +70,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Keyboard shortcuts 1..5 for sections
-  document.addEventListener('keydown', (e) => {
-    if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
-    if (e.key === '1') showSectionById('home');
-    if (e.key === '2') showSectionById('about');
-    if (e.key === '3') showSectionById('projects');
-    if (e.key === '4') showSectionById('skills');
-    if (e.key === '5') showSectionById('contact');
-    if (e.key.toLowerCase() === 'r') window.open('files/Kola_Rajesh_Resume.pdf', '_blank');
-  });
+ // ... (Existing JavaScript code) ...
+
+  // Keyboard shortcuts 1..5 for sections
+  document.addEventListener('keydown', (e) => {
+    if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if (e.key === '1') showSectionById('home');
+    if (e.key === '2') showSectionById('about');
+    if (e.key === '3') showSectionById('projects');
+    if (e.key === '4') showSectionById('skills');
+    if (e.key === '5') showSectionById('contact');
+    // UPDATED PATH HERE:
+    if (e.key.toLowerCase() === 'r') window.open('/PORTFOLIO/files/Kola_Rajesh_Resume.pdf', '_blank');
+  });
 });
+
