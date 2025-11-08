@@ -9,11 +9,8 @@ html, body { margin:0; padding:0; height:100%; }
 
 /* Full sword background + glow */
 body{
-  /* --- START OF CORRECTED BACKGROUND CODE --- */
   background: url('images/bg-swords.jpg') no-repeat center center fixed;
-  background-size: contain; /* Set to CONTAINS to show the full image without cropping */
-  background-color: #022; /* Adds a solid color in areas where the image doesn't fill */
-  /* --- END OF CORRECTED BACKGROUND CODE --- */
+  background-size: cover;
   color:#eaf3ff;
   animation: swordGlow 12s ease-in-out infinite;
 }
