@@ -9,7 +9,8 @@ html, body { margin:0; padding:0; height:100%; }
 
 /* Full sword background + glow */
 body{
-  background: url('images/bg-swords.jpg') no-repeat center center fixed;
+  /* CORRECTED PATH FOR GITHUB PAGES */
+  background: url('/PORTFOLIO/images/bg-swords.jpg') no-repeat center center fixed;
   background-size: cover;
   color:#eaf3ff;
   animation: swordGlow 12s ease-in-out infinite;
