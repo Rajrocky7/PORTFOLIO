@@ -1,335 +1,131 @@
-/* ---------- Theme variables (light & dark) ---------- */
-/* Default variables used by both themes */
-:root {
-  --bg: #0f172a;          /* background (dark default) */
-  --surface: #0f172a;     /* page surface */
-  --muted: #94a3b8;
-  --text: #f1f5f9;
-  --header: #1e293b;
-  --accent: #38bdf8;
-  --card: #111827;
-  --glass: rgba(255,255,255,0.03);
+/* Reset & layout */
+html, body { margin:0; padding:0; height:100%; }
+:root{
+  --accent:#4fd1c5; --accent2:#60a5fa; --muted:#9fb7da;
+  --glass: rgba(255,255,255,0.04);
+  font-family: Inter, system-ui, Arial, sans-serif;
+  color-scheme: dark;
 }
 
-/* Light theme variables */
-.light-theme {
-  --bg: #f8fafc;          /* light background */
-  --surface: #ffffff;
-  --muted: #64748b;
-  --text: #0f172a;
-  --header: #ffffff;
-  --accent: #0ea5e9;
-  --card: #f1f5f9;
-  --glass: rgba(2,6,23,0.04);
+/* Full sword background + glow */
+body{
+  background: url('images/bg-swords.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color:#eaf3ff;
+  animation: swordGlow 12s ease-in-out infinite;
 }
+@keyframes swordGlow{0%,100%{filter:brightness(1) contrast(1)}50%{filter:brightness(1.12) contrast(1.06)}}
 
-/* Dark theme variables */
-.dark-theme {
-  --bg: #0b1220;
-  --surface: #0f172a;
-  --muted: #94a3b8;
-  --text: #f1f5f9;
-  --header: #1e293b;
-  --accent: #38bdf8;
-  --card: #0f172a;
-  --glass: rgba(255,255,255,0.03);
-}
+/* Header/nav (Fixed position) */
+header{position:fixed;left:0;right:0;top:12px;z-index:30;display:flex;justify-content:center}
+nav{background:linear-gradient(180deg, rgba(0,0,0,0.5), rgba(0,0,0,0.35));padding:8px 12px;border-radius:10px;backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.03)}
+nav ul{list-style:none;display:flex;gap:8px;margin:0;padding:0}
+nav a{color:var(--muted);padding:8px 12px;text-decoration:none;font-weight:700;border-radius:8px}
+nav a.active, nav a:hover{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#022}
 
-/* Apply variables */
-html, body {
+/* === MULTIPAGE/FIXED MODE (Active Logic) === */
+
+body.multipage-mode {
   height: 100%;
-}
-body {
-  background-color: var(--bg);
-  color: var(--text);
-  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  line-height: 1.6;
-  scroll-behavior: smooth;
-  transition: background-color 300ms ease, color 300ms ease;
+  overflow: hidden; /* Prevents page-level scrolling */
 }
 
-/* Add subtle transition to many elements */
-* {
+body.multipage-mode main {
+  height: 100vh;
+  padding: 0; /* Remove padding from main to use absolute positioning on sections */
+  position: relative;
+  box-sizing: border-box;
+  display: block;
+}
+
+/* Fixed footer for Multipage Mode */
+body.multipage-mode footer {
+  position: fixed; 
+  left:0; 
+  right:0; 
+  bottom:0; 
+  height: 40px; 
+  box-sizing: border-box;
+  text-align:center;
+  padding:12px 0; 
+  color:#fff;
+  font-weight:800;
+  font-size:1.1em;
+  background:rgba(0,0,0,0.8);
+  backdrop-filter:blur(3px);
+  border-top:2px solid var(--accent);
+  text-shadow: 0 0 8px var(--accent);
+  transition: background 0.5s ease;
+  z-index:20;
+}
+
+/* Fixed height for sections in Multipage Mode, enables internal scroll */
+body.multipage-mode .section {
+  /* Calculated height for fixed screen: 100vh - (header area ~80px) - (footer height 40px) - (section top/bottom padding 52px) */
+  height: calc(100vh - 172px); 
+  overflow-y: auto; /* Allows content inside the section to scroll */
   box-sizing: border-box;
 }
 
-/* show focus outlines only when keyboard navigating */
-.user-is-tabbing :focus {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
+/* === SHARED STYLES FOR .section (CRITICAL FIXES) === */
+
+.section{
+  width:min(1100px,94%);
+  max-width:1100px;
+  
+  /* CRITICAL: Absolute position the section right below the header area */
+  position: absolute; 
+  top: 80px; /* Aligns content 80px from the top (right below the nav) */
+  left: 50%;
+  transform: translateX(-50%); /* Centers the block */
+  z-index: 1; /* Default lower Z-index */
+
+  background:linear-gradient(180deg, rgba(2,6,20,0.45), rgba(2,6,20,0.6));
+  border-radius:14px;
+  padding:26px;
+  box-shadow:0 20px 60px rgba(2,6,20,0.6);
+  
+  /* Initial state: Hidden */
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .45s ease, visibility .45s;
+  border:1px solid rgba(255,255,255,0.03)
 }
 
-/* ---------- Header & nav ---------- */
-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 40px;
-  background: var(--header);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  transition: background 250ms ease, color 250ms ease;
+.section.active{
+  opacity:1;
+  visibility:visible;
+  z-index: 2; /* CRITICAL: Active section is always on top */
 }
 
-header h1 {
-  font-size: 1.25rem;
-  letter-spacing: 1px;
+/* Home specifics */
+.lead{color:var(--muted);margin-top:8px}
+.meta{color:var(--muted);margin-top:6px}
+
+/* About two-column + embed */
+.about-columns{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
+.about-text{flex:1;min-width:260px}
+.about-embed{width:420px;min-width:260px}
+.pdf-wrap{height:520px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.04)}
+.pdf-wrap iframe{width:100%;height:100%;border:0}
+
+/* Projects */
+.project-list{display:flex;flex-direction:column;gap:12px}
+.project{background:rgba(255,255,255,0.02);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)}
+
+/* Skills chips */
+.skills-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.skills-chips .chip{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,0.03);font-weight:700;color:#eaf3ff}
+
+/* Buttons & forms */
+.btn{display:inline-block;padding:10px 14px;border-radius:10px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#022;font-weight:800;text-decoration:none}
+.form-actions{margin-top:8px}
+.contact-form input,.contact-form textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit;margin-top:8px}
+
+/* Responsive */
+@media(max-width:900px){
+  .about-columns{flex-direction:column}
+  .pdf-wrap{height:360px}
+  /* Adjusted height for smaller screens */
+  body.multipage-mode .section{height: calc(100vh - 172px);}
 }
-
-/* Controls container holds the theme toggle (keeps it left of nav) */
-.controls {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  margin-right: 12px;
-}
-
-/* Theme toggle button */
-.theme-toggle {
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.06);
-  padding: 8px;
-  border-radius: 10px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  color: var(--text);
-  transition: background 220ms ease, transform 120ms ease, color 220ms ease;
-}
-.theme-toggle:hover { transform: translateY(-2px); }
-.theme-toggle:active { transform: translateY(0); }
-
-/* Show/hide icons based on theme (only decorative) */
-.icon-moon { display: none; }
-.dark-theme .icon-moon { display: inline-block; }
-.icon-sun { display: inline-block; }
-.dark-theme .icon-sun { display: none; }
-
-/* Navigation links - remain to the right of controls */
-nav {
-  display: inline-flex;
-  gap: 10px;
-  align-items: center;
-}
-nav a {
-  color: var(--text);
-  margin: 0 12px;
-  text-decoration: none;
-  font-weight: 500;
-  position: relative;
-}
-nav a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -6px;
-  width: 0%;
-  height: 2px;
-  background: var(--accent);
-  transition: width 220ms ease;
-}
-nav a:hover { color: var(--accent); }
-nav a:hover::after { width: 100%; }
-
-/* ---------- Hero ---------- */
-#hero {
-  text-align: center;
-  padding: 110px 20px;
-  position: relative;
-  overflow: hidden;
-}
-
-/* hero background faint circles */
-#hero::before {
-  content: "";
-  position: absolute;
-  inset: -30% -10% auto -10%;
-  height: 220%;
-  background: radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--accent) 6%, transparent), transparent 10%),
-              radial-gradient(circle at 80% 70%, color-mix(in srgb, #6366f1 4%, transparent), transparent 12%);
-  z-index: 0;
-  pointer-events: none;
-}
-#hero > * { position: relative; z-index: 1; }
-
-#hero span { color: var(--accent); }
-
-/* ---------- Buttons ---------- */
-.btn {
-  display: inline-block;
-  margin-top: 20px;
-  padding: 10px 22px;
-  background: var(--accent);
-  color: var(--bg);
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 600;
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
-}
-
-/* Float animation */
-@keyframes floaty {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-  100% { transform: translateY(0); }
-}
-.btn.float { animation: floaty 3.2s ease-in-out infinite; }
-.btn.float:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 10px 30px rgba(56,189,248,0.08); }
-
-/* ---------- Sections & cards ---------- */
-section {
-  padding: 56px 20px;
-  max-width: 1000px;
-  margin: auto;
-  transition: color 300ms ease, background 300ms ease;
-}
-
-h2 { font-size: 1.5rem; margin-bottom: 12px; }
-
-ul { list-style: none; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
-ul li {
-  background: var(--card);
-  padding: 8px 14px;
-  border-radius: 8px;
-  transition: transform 220ms ease, box-shadow 220ms ease, background 300ms ease;
-  color: var(--text);
-}
-ul li:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(2,6,23,0.6); }
-
-#contact a { color: var(--accent); text-decoration: none; font-weight: 500; }
-#contact a:hover { text-decoration: underline; }
-
-footer { text-align: center; padding: 18px; background: var(--header); margin-top: 30px; transform: translateY(6px); opacity: 0.98; transition: background 300ms ease; }
-
-/* ---------- Typing & reveal animations ---------- */
-@media (prefers-reduced-motion: reduce) {
-  * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
-}
-
-.typed {
-  display: inline-block;
-  border-right: 2px solid var(--accent);
-  white-space: nowrap;
-  overflow: hidden;
-  vertical-align: bottom;
-  max-width: 0;
-  animation: typing 2.2s steps(18, end) forwards, blink 1s step-end infinite;
-}
-
-@keyframes typing { from { max-width: 0; } to { max-width: 22ch; } }
-@keyframes blink { 50% { border-color: transparent; } }
-
-.reveal { opacity: 0; transform: translateY(18px); transition: opacity 600ms ease, transform 600ms ease; }
-.reveal.active { opacity: 1; transform: translateY(0); }
-
-/* ---------- Responsive tweaks ---------- */
-@media (max-width: 800px) {
-  header { padding: 12px 16px; }
-  nav a { margin: 0 8px; font-size: 0.95rem; }
-  .controls { display: none; } /* hide toggle on very small widths if desired */
-}
-@media (max-width: 600px) {
-  #hero { padding: 80px 12px; }
-  .btn { padding: 10px 16px; }
-  section { padding: 36px 18px; }
-  h2 { font-size: 1.25rem; }
-}
-/* ----- Battle background & optional image ----- */
-
-/* Optional full-screen battlefield image behind everything.
-   If you use an image, add /images/bg-swords.jpg to your project.
-   If you don't want an image, comment out body::before rules below. */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: url("images/bg-swords.jpg") no-repeat center center / cover;
-  z-index: -4;
-  filter: brightness(0.45) contrast(0.9) saturate(1.2);
-  transform: scale(1.02);
-  transition: filter 0.6s ease, transform 8s ease;
-}
-
-/* subtle animated zoom (only when reduced-motion not requested) */
-@media (prefers-reduced-motion: no-preference) {
-  @keyframes bgZoom {
-    0% { transform: scale(1.02) translateY(0); }
-    50% { transform: scale(1.04) translateY(-6px); }
-    100% { transform: scale(1.02) translateY(0); }
-  }
-  body::before { animation: bgZoom 18s ease-in-out infinite; }
-}
-
-/* overlay to increase contrast (above image, below content) */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(2,6,23,0.55), rgba(2,6,23,0.66));
-  z-index: -3;
-  pointer-events: none;
-}
-
-/* Battle SVG container (on top of image & overlay but behind page content) */
-#battle-bg {
-  position: fixed;
-  inset: 0;
-  z-index: -2;      /* between overlay (-3) and content (0) */
-  pointer-events: none;
-  display: block;
-  opacity: 0.85;
-  mix-blend-mode: screen;
-}
-
-/* make svg full viewport */
-#swords-svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-/* Sword swing and sparks animations */
-@keyframes swing-left {
-  0% { transform: translate(420px,350px) rotate(-22deg); }
-  30% { transform: translate(430px,330px) rotate(-6deg); }
-  50% { transform: translate(440px,310px) rotate(6deg); }
-  65% { transform: translate(430px,330px) rotate(-6deg); }
-  100% { transform: translate(420px,350px) rotate(-22deg); }
-}
-@keyframes swing-right {
-  0% { transform: translate(780px,350px) rotate(18deg); }
-  30% { transform: translate(770px,330px) rotate(6deg); }
-  50% { transform: translate(760px,310px) rotate(-6deg); }
-  65% { transform: translate(770px,330px) rotate(6deg); }
-  100% { transform: translate(780px,350px) rotate(18deg); }
-}
-@keyframes sparks-fade {
-  0% { opacity: 0; transform: translateY(0) scale(0.6); }
-  45% { opacity: 1; transform: translateY(-6px) scale(1); }
-  100% { opacity: 0; transform: translateY(-12px) scale(0.2); }
-}
-
-/* apply animations unless reduced-motion requested */
-@media (prefers-reduced-motion: no-preference) {
-  #sword-left { animation: swing-left 4.8s ease-in-out infinite; transform-origin: center bottom; }
-  #sword-right { animation: swing-right 4.8s ease-in-out infinite; transform-origin: center bottom; }
-  #sparks { animation: sparks-fade 4.8s ease-in-out infinite; transform-origin: center; }
-}
-
-/* reduced motion: show static but faint elements */
-@media (prefers-reduced-motion: reduce) {
-  #sword-left, #sword-right, #sparks { animation: none; opacity: 0.7; }
-  body::before, body::after { animation: none; }
-}
-
-/* tone down effect in light theme for readability */
-.light-theme #battle-bg { opacity: 0.55; mix-blend-mode: normal; filter: grayscale(0.25) brightness(0.92); }
-
-/* hide complex background on small screens for performance & readability */
-@media (max-width: 760px) {
-  #battle-bg { display: none; }
-  body::before { filter: brightness(0.6); }
-}
-
