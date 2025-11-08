@@ -1,131 +1,83 @@
-/* Reset & layout */
-html, body { margin:0; padding:0; height:100%; }
-:root{
-  --accent:#4fd1c5; --accent2:#60a5fa; --muted:#9fb7da;
-  --glass: rgba(255,255,255,0.04);
-  font-family: Inter, system-ui, Arial, sans-serif;
-  color-scheme: dark;
-}
+// script.js — show Home by default, smooth cross-fade with small delay, populate skills
+document.addEventListener('DOMContentLoaded', () => {
+  const navLinks = Array.from(document.querySelectorAll('nav a[data-target]'));
+  const sections = Array.from(document.querySelectorAll('.section'));
+  let activeSection = null;
+  // This check allows the JS to work with both multipage and scrolling modes
+  const isScrollingMode = document.body.classList.contains('scrolling-mode');
 
-/* Full sword background + glow */
-body{
-  background: url('images/bg-swords.jpg') no-repeat center center fixed;
-  background-size: cover;
-  color:#eaf3ff;
-  animation: swordGlow 12s ease-in-out infinite;
-}
-@keyframes swordGlow{0%,100%{filter:brightness(1) contrast(1)}50%{filter:brightness(1.12) contrast(1.06)}}
+  // Skills list from resume info
+  const SKILLS = [
+    'Python (Basic)','SQL','Power BI','Excel','Word','PowerPoint',
+    'Time management','Communication','Project management','Analytics','Problem solving'
+  ];
+  const skillsList = document.getElementById('skillsList');
+  if (skillsList) {
+    SKILLS.forEach(s => {
+      const el = document.createElement('div');
+      el.className = 'chip';
+      el.textContent = s;
+      skillsList.appendChild(el);
+    });
+  }
 
-/* Header/nav (Fixed position) */
-header{position:fixed;left:0;right:0;top:12px;z-index:30;display:flex;justify-content:center}
-nav{background:linear-gradient(180deg, rgba(0,0,0,0.5), rgba(0,0,0,0.35));padding:8px 12px;border-radius:10px;backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.03)}
-nav ul{list-style:none;display:flex;gap:8px;margin:0;padding:0}
-nav a{color:var(--muted);padding:8px 12px;text-decoration:none;font-weight:700;border-radius:8px}
-nav a.active, nav a:hover{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#022}
+  // Show section with fade-out -> delay -> fade-in
+  function showSectionById(id) {
+    const newSection = document.getElementById(id);
+    if (!newSection) return;
+    if (activeSection === newSection) return;
 
-/* === MULTIPAGE/FIXED MODE (Active Logic) === */
+    // Reset internal scroll position of the new section (important for multipage mode)
+    newSection.scrollTop = 0;
 
-body.multipage-mode {
-  height: 100%;
-  overflow: hidden; /* Prevents page-level scrolling */
-}
+    if (activeSection) {
+      activeSection.classList.remove('active');
+      
+      // Delay to ensure the fade-out completes before fade-in
+      setTimeout(() => {
+          newSection.classList.add('active');
+      }, 450); // Set delay equal to CSS transition time
 
-body.multipage-mode main {
-  height: 100vh;
-  padding: 0; /* Remove padding from main to use absolute positioning on sections */
-  position: relative;
-  box-sizing: border-box;
-  display: block;
-}
+    } else {
+      newSection.classList.add('active');
+    }
 
-/* Fixed footer for Multipage Mode */
-body.multipage-mode footer {
-  position: fixed; 
-  left:0; 
-  right:0; 
-  bottom:0; 
-  height: 40px; 
-  box-sizing: border-box;
-  text-align:center;
-  padding:12px 0; 
-  color:#fff;
-  font-weight:800;
-  font-size:1.1em;
-  background:rgba(0,0,0,0.8);
-  backdrop-filter:blur(3px);
-  border-top:2px solid var(--accent);
-  text-shadow: 0 0 8px var(--accent);
-  transition: background 0.5s ease;
-  z-index:20;
-}
+    activeSection = newSection;
 
-/* Fixed height for sections in Multipage Mode, enables internal scroll */
-body.multipage-mode .section {
-  /* Calculated height for fixed screen: 100vh - (header area ~80px) - (footer height 40px) - (section top/bottom padding 52px) */
-  height: calc(100vh - 172px); 
-  overflow-y: auto; /* Allows content inside the section to scroll */
-  box-sizing: border-box;
-}
+    // set nav active
+    navLinks.forEach(n => n.classList.toggle('active', n.dataset.target === id));
+  }
 
-/* === SHARED STYLES FOR .section (CRITICAL FIXES) === */
+  // Wire nav clicks
+  navLinks.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      showSectionById(link.dataset.target);
+    });
+  });
 
-.section{
-  width:min(1100px,94%);
-  max-width:1100px;
-  
-  /* CRITICAL: Absolute position the section right below the header area */
-  position: absolute; 
-  top: 80px; /* Aligns content 80px from the top (right below the nav) */
-  left: 50%;
-  transform: translateX(-50%); /* Centers the block */
-  z-index: 1; /* Default lower Z-index */
+  // Show Home on load
+  showSectionById('home');
 
-  background:linear-gradient(180deg, rgba(2,6,20,0.45), rgba(2,6,20,0.6));
-  border-radius:14px;
-  padding:26px;
-  box-shadow:0 20px 60px rgba(2,6,20,0.6);
-  
-  /* Initial state: Hidden */
-  opacity:0;
-  visibility:hidden;
-  transition:opacity .45s ease, visibility .45s;
-  border:1px solid rgba(255,255,255,0.03)
-}
+  // Contact form demo submit
+  const contactForm = document.getElementById('contactForm');
+  if (contactForm) {
+    contactForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const name = document.getElementById('cf-name').value || 'Friend';
+      alert(`Thanks ${name}! (Demo) I'll contact you at the email provided.`);
+      contactForm.reset();
+    });
+  }
 
-.section.active{
-  opacity:1;
-  visibility:visible;
-  z-index: 2; /* CRITICAL: Active section is always on top */
-}
-
-/* Home specifics */
-.lead{color:var(--muted);margin-top:8px}
-.meta{color:var(--muted);margin-top:6px}
-
-/* About two-column + embed */
-.about-columns{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap}
-.about-text{flex:1;min-width:260px}
-.about-embed{width:420px;min-width:260px}
-.pdf-wrap{height:520px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.04)}
-.pdf-wrap iframe{width:100%;height:100%;border:0}
-
-/* Projects */
-.project-list{display:flex;flex-direction:column;gap:12px}
-.project{background:rgba(255,255,255,0.02);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)}
-
-/* Skills chips */
-.skills-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-.skills-chips .chip{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,0.03);font-weight:700;color:#eaf3ff}
-
-/* Buttons & forms */
-.btn{display:inline-block;padding:10px 14px;border-radius:10px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#022;font-weight:800;text-decoration:none}
-.form-actions{margin-top:8px}
-.contact-form input,.contact-form textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit;margin-top:8px}
-
-/* Responsive */
-@media(max-width:900px){
-  .about-columns{flex-direction:column}
-  .pdf-wrap{height:360px}
-  /* Adjusted height for smaller screens */
-  body.multipage-mode .section{height: calc(100vh - 172px);}
-}
+  // Keyboard shortcuts 1..5 for sections
+  document.addEventListener('keydown', (e) => {
+    if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if (e.key === '1') showSectionById('home');
+    if (e.key === '2') showSectionById('about');
+    if (e.key === '3') showSectionById('projects');
+    if (e.key === '4') showSectionById('skills');
+    if (e.key === '5') showSectionById('contact');
+    if (e.key.toLowerCase() === 'r') window.open('files/Kola_Rajesh_Resume.pdf', '_blank');
+  });
+});
