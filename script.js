@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === '3') showSectionById('projects');
     if (e.key === '4') showSectionById('skills');
     if (e.key === '5') showSectionById('contact');
-    // CORRECTED PATH using /PORTFOLIO/Files/
+    // FIXED PATH using /PORTFOLIO/Files/
     if (e.key.toLowerCase() === 'r') window.open('/PORTFOLIO/Files/Kola_Rajesh_Resume.pdf', '_blank');
   });
 });
