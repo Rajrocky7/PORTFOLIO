@@ -78,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === '3') showSectionById('projects');
     if (e.key === '4') showSectionById('skills');
     if (e.key === '5') showSectionById('contact');
-    if (e.key.toLowerCase() === 'r') window.open('files/Kola_Rajesh_Resume.pdf', '_blank');
+    // CORRECTED PATH FOR GITHUB PAGES
+    if (e.key.toLowerCase() === 'r') window.open('/PORTFOLIO/files/Kola_Rajesh_Resume.pdf', '_blank');
   });
 });
