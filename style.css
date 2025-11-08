@@ -8,16 +8,12 @@ html, body { margin:0; padding:0; height:100%; }
 }
 
 /* Full sword background + glow */
-/* ... (Existing CSS code) ... */
-
-/* Full sword background + glow */
 body{
   background: url('/PORTFOLIO/images/bg-swords.jpg') no-repeat center center fixed;
   background-size: cover;
   color:#eaf3ff;
   animation: swordGlow 12s ease-in-out infinite;
 }
-/* ... (Rest of CSS remains the same) ... */
 @keyframes swordGlow{0%,100%{filter:brightness(1) contrast(1)}50%{filter:brightness(1.12) contrast(1.06)}}
 
 /* Header/nav (Fixed position) */
@@ -28,7 +24,6 @@ nav a{color:var(--muted);padding:8px 12px;text-decoration:none;font-weight:700;b
 nav a.active, nav a:hover{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#022}
 
 /* === MULTIPAGE/FIXED MODE (Active Logic) === */
-
 body.multipage-mode {
   height: 100%;
   overflow: hidden; /* Prevents page-level scrolling */
@@ -72,7 +67,6 @@ body.multipage-mode .section {
 }
 
 /* === SHARED STYLES FOR .section (CRITICAL FIXES) === */
-
 .section{
   width:min(1100px,94%);
   max-width:1100px;
@@ -133,4 +127,3 @@ body.multipage-mode .section {
   /* Adjusted height for smaller screens */
   body.multipage-mode .section{height: calc(100vh - 172px);}
 }
-
