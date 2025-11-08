@@ -9,7 +9,7 @@ html, body { margin:0; padding:0; height:100%; }
 
 /* Full sword background + glow */
 body{
-  /* This path uses /PORTFOLIO/images/ */
+  /* FIXED PATH: /PORTFOLIO/images/ */
   background: url('/PORTFOLIO/images/bg-swords.jpg') no-repeat center center fixed;
   background-size: cover;
   color:#eaf3ff;
